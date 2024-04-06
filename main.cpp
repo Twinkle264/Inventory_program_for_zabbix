@@ -54,7 +54,7 @@ bool AddInvMonitors(string &str) {
 
             if (!cin.good()) {
                 cin.clear();
-                _flushall();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
             } else {
                 is_good_digit = true;
             }
@@ -62,8 +62,7 @@ bool AddInvMonitors(string &str) {
         } while (!is_good_digit or count_monitors < 0);
 
         cout << endl << "У этого ПК " << count_monitors << " мониторов" << endl << "Верно? (Y/n, Д/н): ";
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        getline(cin, answer);
+        cin >> answer;
 
     } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
 
