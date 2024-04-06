@@ -3,13 +3,14 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <limits>
 
 using namespace std;
 
 bool WriteToFile(const string& str) {
     ofstream inFile("C:\\pc_info\\info_test.txt");
     if (!inFile.is_open()) {
-        cerr << "FILE WRITE ERROR!";
+        cerr << "ОШИБКА ЗАПИСИ ФАЙЛА!";
         return false;
     }
 
@@ -20,16 +21,17 @@ bool WriteToFile(const string& str) {
 
 bool AddInv(string &str) {
     string buffer;
-    char answer = 'n';
+    string answer;
 
-    cout << "\t-----PC's inventory number-----";
+    cout << "\t-----ИНВЕНТАРНЫЙ НОМЕР ПК-----";
 
     do {
-        cout << endl << "Enter inventory number of PC: ";
+        cout << endl << "Введите инвентарный номер: ";
         cin >> buffer;
-        cout << endl << "PC's inventory number: " << buffer << endl << "Correct? (y/n): ";
-        cin >> answer;
-    } while (answer != 'y' and answer != 'Y');
+        cout << endl << "Вы ввели: " << buffer << endl << "Верно? (Y/n, Д/н): ";
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        getline(cin, answer);
+    } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
 
     str = buffer;
     return true;
@@ -37,31 +39,33 @@ bool AddInv(string &str) {
 
 bool AddInvMonitors(string &str) {
     string buffer;
-    char answer = 'n';
+    string answer;
     int count_monitors = 1;
     bool is_good_digit = false;
 
     cout << endl << endl << endl;
-    cout << "\t-----Monitor's inventory numbers-----";
+    cout << "\t-----ИНВЕНТАРНЫЙ НОМЕР МОНИТОРА-----";
     cout << endl << endl;
 
     do {
         do {
-            cout << "How many monitors does this PC have: ";
+            cout << "Сколько мониторов на этом компьютере: ";
             cin >> count_monitors;
 
             if (!cin.good()) {
                 cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                _flushall();
             } else {
                 is_good_digit = true;
             }
 
         } while (!is_good_digit or count_monitors < 0);
 
-        cout << endl << "This PC has " << count_monitors << " monitors" << endl << "Correct? (y/n): ";
-        cin >> answer;
-    } while (answer != 'y' and answer != 'Y');
+        cout << endl << "У этого ПК " << count_monitors << " мониторов" << endl << "Верно? (Y/n, Д/н): ";
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        getline(cin, answer);
+
+    } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
 
 
     answer = 'n';
@@ -70,11 +74,12 @@ bool AddInvMonitors(string &str) {
     for (int i = 0; i < count_monitors; ++i) {
         cout << endl << endl;
         do {
-            cout << "Input inventory number of " << i + 1 << " monitor: ";
+            cout << "Введите инвентарный номер " << i + 1 << " монитора: ";
             cin >> buffer;
-            cout << endl << "Monitor " << i + 1 << " inventory number: " << buffer << endl << "Correct? (y/n): ";
-            cin >> answer;
-        } while (answer != 'y' and answer != 'Y');
+            cout << endl << "Инвентарный номер " << i + 1 << " монитора: " << buffer << endl << "Верно? (Y/n, Д/н): ";
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            getline(cin, answer);
+        } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
         str += buffer + "; ";
     }
     return true;
@@ -88,7 +93,7 @@ bool AddCPUName(string &str) {
     system(R"(wmic cpu get Name /format:list | FindStr "Name" > "c:\pc_info\1.txt")");
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
     getline(outFile, buffer);
@@ -109,7 +114,7 @@ bool AddCPUSocket(string &str) {
     system(R"(wmic cpu get SocketDesignation /format:list | FindStr "SocketDesignation" > "c:\pc_info\1.txt")");
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
     getline(outFile, buffer);
@@ -132,7 +137,7 @@ bool AddDDR(string &str) {
     system(R"(wmic MemoryChip get SMBIOSMemoryType /format:list | FindStr "SMBIOSMemoryType=" > "c:\pc_info\1.txt")");
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
     outFile >> buffer;
@@ -145,7 +150,7 @@ bool AddDDR(string &str) {
     } else if (buffer == "SMBIOSMemoryType=26" or buffer == "SMBIOSMemoryType=0") {
         full_info_ddr += "DDR4 ";
     } else {
-        cout << endl << "MEMORY TYPE ERROR" << endl;
+        cout << endl << "ОШИБКА ТИПА ПАМЯТИ" << endl;
         system("pause");
         return false;
     };
@@ -162,7 +167,7 @@ bool AddDDRCapacity(string &str) {
     system(R"(wmic MemoryChip get Capacity /format:list | FindStr "Capacity" > "c:\pc_info\1.txt")");
     ifstream outFile2("C:\\pc_info\\1.txt");
     if (!outFile2.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
 
@@ -197,7 +202,7 @@ bool AddGPU(string &str) {
     system(R"(WMIC path Win32_VideoController get Name /format:list | FindStr "Name" > "c:\pc_info\1.txt")");
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
     getline(outFile, buffer);
@@ -220,7 +225,7 @@ bool AddMotherboard(string &str) {
     system(R"(WMIC baseboard get Manufacturer /format:list | FindStr "Manufacturer" > "c:\pc_info\1.txt")");
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
     getline(outFile, buffer);
@@ -233,7 +238,7 @@ bool AddMotherboard(string &str) {
     system(R"(wmic baseboard get Product /format:list | FindStr "Product" > "c:\pc_info\1.txt")");
     ifstream outFile2("C:\\pc_info\\1.txt");
     if (!outFile2.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
     getline(outFile2, buffer);
@@ -260,7 +265,7 @@ bool AddDrives(string &str) {
     system(R"(wmic diskdrive get caption /format:list | FindStr "Caption" > "c:\pc_info\1.txt")");
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
 
@@ -281,7 +286,7 @@ bool AddDrives(string &str) {
     system(R"(wmic diskdrive get Size /format:list | FindStr "Size" > "c:\pc_info\1.txt")");
     ifstream outFile2("C:\\pc_info\\1.txt");
     if (!outFile2.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
 
@@ -317,7 +322,7 @@ bool ReadFromFile(vector<string> &texts) {
 
     ifstream outFile("C:\\pc_info\\info.txt");
     if (!outFile.is_open()) {
-        cerr << "BUFFER FILE IS NOT OPEN";
+        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
         return false;
     }
 
@@ -343,23 +348,23 @@ string AddDevicesInfo() {
 
     str += "CPU - ";
     if (AddCPUName(buffer)) {
-        cout << endl << "CPU Name info is OK" << endl;
+        cout << endl << "Название CPU добавлено" << endl;
         str += buffer;
         str += "; ";
     } else {
-        cout << endl << "CPU Name info is Error";
-        cout << endl << "Please add information manually later";
+        cout << endl << "Ошибка добавления названия CPU";
+        cout << endl << "Введите данную информацию позднее вручную";
     }
     buffer = "";
 
     str += "Socket - ";
     if (AddCPUSocket(buffer)) {
-        cout << endl << "CPU Socket info is OK" << endl;
+        cout << endl << "Информация с CPU сокете добавлена" << endl;
         str += buffer;
         str += "; ";
     } else {
-        cout << endl << "CPU Socket info is Error";
-        cout << endl << "Please add information manually later";
+        cout << endl << "Ошибка добавления информации о CPU сокете";
+        cout << endl << "Введите данную информацию позднее вручную";
     }
     buffer = "";
 
@@ -367,21 +372,21 @@ string AddDevicesInfo() {
     cout << endl;
     str += "RAM - ";
     if (AddDDR(buffer)) {
-        cout << endl << "RAM info is OK" << endl;
+        cout << endl << "Информация о RAM добавлена" << endl;
         str += buffer;
     } else {
-        cout << endl << "RAM info is Error";
-        cout << endl << "Please add information manually later";
+        cout << endl << "Ошибка добавления информации о RAM";
+        cout << endl << "Введите данную информацию позднее вручную";
     }
     buffer = "";
 
     if (AddDDRCapacity(buffer)) {
-        cout << endl << "RAM Capacity info is OK" << endl;
+        cout << endl << "Информация об объеме RAM добавлена" << endl;
         str += buffer;
         str += "; ";
     } else {
-        cout << endl << "RAM Capacity info is Error";
-        cout << endl << "Please add information manually later";
+        cout << endl << "Ошибка добавления информации об объеме RAM";
+        cout << endl << "Введите данную информацию позднее вручную";
     }
     buffer = "";
 
@@ -389,12 +394,12 @@ string AddDevicesInfo() {
     cout << endl;
     str += "GPU - ";
     if (AddGPU(buffer)) {
-        cout << endl << "GPU info is OK" << endl;
+        cout << endl << "Информация о GPU добавлена" << endl;
         str += buffer;
         str += "; ";
     } else {
-        cout << endl << "GPU info is Error";
-        cout << endl << "Please add information manually later";
+        cout << endl << "Ошибка добавления информации о GPU";
+        cout << endl << "Введите данную информацию позднее вручную";
     }
     buffer = "";
 
@@ -402,35 +407,62 @@ string AddDevicesInfo() {
     cout << endl;
     str += "Motherboard - ";
     if (AddMotherboard(buffer)) {
-        cout << endl << "Motherboard info is OK" << endl;
+        cout << endl << "Информация о материнской плате добавлена" << endl;
         str += buffer;
         str += "; ";
     } else {
-        cout << endl << "Motherboard info is Error";
-        cout << endl << "Please add information manually later";
+        cout << endl << "Ошибка добавления информации о материнской плате";
+        cout << endl << "Введите данную информацию позднее вручную";
     }
     buffer = "";
 
 
     cout << endl;
     if (AddDrives(buffer)) {
-        cout << endl << "Drives info is OK" << endl;
+        cout << endl << "Информация о жестких дисках добавлена" << endl;
         str += buffer;
     } else {
-        cout << endl << "Drives info is Error";
-        cout << endl << "Please add information manually later";
+        cout << endl << "Ошибка добавления информации о жестких дисках";
+        cout << endl << "Введите данную информацию позднее вручную";
     }
     buffer = "";
 
     return str;
 }
 
+void Check(string &str, string &whois) {
+    string chek;
+
+    do {
+        if (whois == "dalet"){
+            cout << endl << endl << "Этот ПК - Dalet? (Y/n, Д/н): ";
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        } else if (whois == "monoblock"){
+            cout << endl << endl << "Этот ПК - моноблок? (Y/n, Д/н): ";
+        }
+
+        getline(cin, chek);
+        if (chek.empty() or chek == "y" or chek == "Y" or chek == "д" or chek == "Д"){
+            if (whois == "dalet") {
+                str += "Dalet; ";
+            }else if (whois == "monoblock"){
+                str += "Monoblock; ";
+            }
+            break;
+        }else if (chek == "n" or chek == "N" or chek == "н" or chek == "Н"){
+            break;
+        }
+    } while (!chek.empty() and chek != "y" and chek != "Y" and chek != "n" and chek != "N"
+             and chek != "д" and chek != "Д" and chek != "н" and chek != "Н");
+
+}
 
 void AddFullInfo(string &info_to_file) {
-    string buffer;
 
+    string buffer;
     AddInv(buffer);
-    cout << endl << "PC's inventory number info is OK" << endl;
+    cout << endl << "Инвентарный номер ПК добавлен" << endl;
     info_to_file += "Inv: ";
     info_to_file += buffer;
     info_to_file += "; \n";
@@ -438,7 +470,7 @@ void AddFullInfo(string &info_to_file) {
     buffer = "";
 
     AddInvMonitors(buffer);
-    cout << endl << "Monitor's inventory number info is OK" << endl;
+    cout << endl << "Инвентарный номер монитора добавлен" << endl;
     info_to_file += buffer;
     info_to_file += "\n";
 
@@ -447,46 +479,38 @@ void AddFullInfo(string &info_to_file) {
     info_to_file += "\n";
     info_to_file += "Other: ";
 
-    cout << endl << "\t-----Other-----" << endl;
+    cout << endl << "\t-----Другие данные-----" << endl;
+
 
     int office_number;
-    cout << endl << "Enter office number: ";
+    cout << endl << "Введите номер кабинета: ";
     while (!(cin >> office_number)) {
-        cout << endl << "Enter office number: ";
+        cout << endl << "Введите номер кабинета: ";
         cin >> office_number;
         cin.clear();
         fflush(stdin);
     }
 
-    cout << endl << "Office number is " << office_number;
+    cout << endl << "Номер кабинета " << office_number;
     info_to_file += "Office - " + to_string(office_number) + "; ";
 
+    buffer = "";
 
-    char dalet_chek;
-    do {
-        cout << endl << endl << "Is this Dalet's PC? y/n: ";
-        cin >> dalet_chek;
+    string whois = "dalet";
 
-        if (dalet_chek == 'y' or dalet_chek == 'Y') {
-            info_to_file += "Dalet; ";
-        }else if (dalet_chek == 'n' or dalet_chek == 'N'){
-            break;
-        }
-    } while (dalet_chek != 'y' and dalet_chek != 'Y' and dalet_chek != 'n' and dalet_chek != 'N');
+    Check(buffer, whois);
+    info_to_file += buffer;
 
+    buffer = "";
+    whois = "monoblock";
 
-    char monoblock_chek;
-    do {
-        cout << endl << endl << "Is this Monoblock? y/n: ";
-        cin >> monoblock_chek;
+    Check(buffer, whois);
+    info_to_file += buffer;
 
-        if (monoblock_chek == 'y' or monoblock_chek == 'Y') {
-            info_to_file += "Monoblock; ";
-        } else if (monoblock_chek == 'n' or monoblock_chek == 'N'){
-            break;
-        }
-    } while (monoblock_chek != 'y' and monoblock_chek != 'Y' and monoblock_chek != 'n' and monoblock_chek != 'N');
+    buffer = "";
+
 }
+
 
 void UpdateInvPC(string &str) {
     vector<string> message;
@@ -539,24 +563,25 @@ void UpdateDevicesInfo(string &str) {
 int main() {
     setlocale(LC_ALL, "Russian.u8");
     system("chcp 65001");
+    system("title Inventory");
     string buffer, info_to_file;
     char command;
 
     system(R"(IF NOT EXIST "C:\pc_info" mkdir C:\pc_info)");
 
-    cout << "\tINVENTORY PROGRAM" << endl << endl;
-    cout << "\tEnter the task number" << endl;
-    cout << "\t1 - Add info about the new computer" << endl;
-    cout << "\t2 - Update computer inventory number" << endl;
-    cout << "\t3 - Update monitor inventory numbers" << endl;
-    cout << "\t4 - Update devices info" << endl;
-    cout << "\t5 - Open information file on this PC" << endl;
-    cout << "\t0 - Exit" << endl << endl;
+    cout << "\tПРОГРАММА ИНВЕНТАРИЗАЦИИ" << endl << endl;
+    cout << "\tВведите номер задачи" << endl;
+    cout << "\t1 - Добавить информацию о новом компьютере" << endl;
+    cout << "\t2 - Обновить инвентарный номер компьютера" << endl;
+    cout << "\t3 - Обновить инвентарный номер монитора" << endl;
+    cout << "\t4 - Обновить информацию о железе" << endl;
+    cout << "\t5 - Открыть файл с информацией на этом ПК" << endl;
+    cout << "\t0 - Выход" << endl << endl;
 
     while (true) {
 
         do {
-            cout << "Command: ";
+            cout << "Команда: ";
             cin >> command;
 
         } while (command < '0' or command > '5');
@@ -577,7 +602,7 @@ int main() {
             system("C:\\pc_info\\info.txt");
             continue;
         } else if (command == '0') {
-            cout << endl << "\tProgram completed" << endl;
+            cout << endl << "\tПрограмма завершена" << endl;
             system("pause");
             return 0;
         }
@@ -586,14 +611,14 @@ int main() {
 
     WriteToFile(info_to_file);
     cout << endl << endl;
-    cout << endl << "\tPlease check the document, save and close it" << endl;
+    cout << endl << "\tПроверьте информацию в документе, сохраните и закройте его" << endl;
     system("C:\\pc_info\\info_test.txt");
     system(R"(COPY "C:\pc_info\info_test.txt" "C:\pc_info\info.txt")");
     system(R"(del "C:\pc_info\1.txt")");
     system(R"(del "C:\pc_info\info_test.txt")");
 
 
-    cout << endl << "\tProgram completed" << endl;
+    cout << endl << "\tПрограмма завершена" << endl;
     system("pause");
     return 0;
 }
