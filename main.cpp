@@ -184,7 +184,7 @@ bool AddDDRCapacity(string &str) {
 
     outFile2.close();
 
-    int capacity_int = static_cast<int>(capacity) / 1024 / 1024 / 1024;
+    int capacity_int = static_cast<int>(capacity / 1024 / 1024 / 1024);
     full_info_ddr += to_string(capacity_int) + "Gb";
 
     str = full_info_ddr;
