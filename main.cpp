@@ -62,7 +62,8 @@ bool AddInvMonitors(string &str) {
         } while (!is_good_digit or count_monitors < 0);
 
         cout << endl << "У этого ПК " << count_monitors << " мониторов" << endl << "Верно? (Y/n, Д/н): ";
-        cin >> answer;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        getline(cin, answer);
 
     } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
 
@@ -123,6 +124,10 @@ bool AddCPUSocket(string &str) {
         cpu_socket += buffer[i];
     }
 
+    if (cpu_socket == "U3E1") {
+        cpu_socket = "LGA1700";
+    }
+
     str = cpu_socket;
 
     return true;
@@ -146,8 +151,13 @@ bool AddDDR(string &str) {
         full_info_ddr += "DDR2 ";
     } else if (buffer == "SMBIOSMemoryType=24" or buffer == "SMBIOSMemoryType=25" or buffer == "SMBIOSMemoryType=18") {
         full_info_ddr += "DDR3 ";
-    } else if (buffer == "SMBIOSMemoryType=26" or buffer == "SMBIOSMemoryType=0") {
+    } else if (buffer == "SMBIOSMemoryType=26") {
         full_info_ddr += "DDR4 ";
+    } else if (buffer == "SMBIOSMemoryType=34" or buffer == "SMBIOSMemoryType=28") {
+        full_info_ddr += "DDR5 ";
+    } else if (buffer == "SMBIOSMemoryType=0") {
+        cout << endl << "ТИП ПАМЯТИ - Неизвестен" << endl;
+        system("pause");
     } else {
         cout << endl << "ОШИБКА ТИПА ПАМЯТИ" << endl;
         system("pause");
@@ -301,10 +311,16 @@ bool AddDrives(string &str) {
 
     outFile2.close();
 
-    for (auto & i : drives_size) {
-        double disk_size_gb = stod(i) / 1000 / 1000 / 1000;
-        int disk_size_int = static_cast<int>(disk_size_gb);
-        i = to_string(disk_size_int);
+    for (int i = 0; i < drives_size.size();) {
+        if (drives_name[i].find("USB") != string::npos or drives_name[i].find("usb") != string::npos){
+            drives_name.erase(drives_name.begin() + i);
+            drives_size.erase(drives_size.begin() + i);
+        } else if (!drives_size.empty()){
+            double disk_size_gb = stod(drives_size[i]) / 1000 / 1000 / 1000;
+            int disk_size_int = static_cast<int>(disk_size_gb);
+            drives_size[i] = to_string(disk_size_int);
+            i++;
+        }
     }
 
     for (int i = 0; i < drives_name.size(); ++i) {
