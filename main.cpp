@@ -3,6 +3,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <limits>
 
 using namespace std;
 
@@ -20,16 +21,17 @@ bool WriteToFile(const string& str) {
 
 bool AddInv(string &str) {
     string buffer;
-    char answer = 'n';
+    string answer;
 
     cout << "\t-----PC's inventory number-----";
 
     do {
         cout << endl << "Enter inventory number of PC: ";
         cin >> buffer;
-        cout << endl << "PC's inventory number: " << buffer << endl << "Correct? (y/n): ";
-        cin >> answer;
-    } while (answer != 'y' and answer != 'Y');
+        cout << endl << "PC's inventory number: " << buffer << endl << "Correct? (Y/n): ";
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        getline(cin, answer);
+    } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
 
     str = buffer;
     return true;
@@ -37,7 +39,7 @@ bool AddInv(string &str) {
 
 bool AddInvMonitors(string &str) {
     string buffer;
-    char answer = 'n';
+    string answer;
     int count_monitors = 1;
     bool is_good_digit = false;
 
@@ -59,9 +61,11 @@ bool AddInvMonitors(string &str) {
 
         } while (!is_good_digit or count_monitors < 0);
 
-        cout << endl << "This PC has " << count_monitors << " monitors" << endl << "Correct? (y/n): ";
-        cin >> answer;
-    } while (answer != 'y' and answer != 'Y');
+        cout << endl << "This PC has " << count_monitors << " monitors" << endl << "Correct? (Y/n): ";
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        getline(cin, answer);
+
+    } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
 
 
     answer = 'n';
@@ -72,9 +76,10 @@ bool AddInvMonitors(string &str) {
         do {
             cout << "Input inventory number of " << i + 1 << " monitor: ";
             cin >> buffer;
-            cout << endl << "Monitor " << i + 1 << " inventory number: " << buffer << endl << "Correct? (y/n): ";
-            cin >> answer;
-        } while (answer != 'y' and answer != 'Y');
+            cout << endl << "Monitor " << i + 1 << " inventory number: " << buffer << endl << "Correct? (Y/n): ";
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            getline(cin, answer);
+        } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
         str += buffer + "; ";
     }
     return true;
@@ -119,6 +124,11 @@ bool AddCPUSocket(string &str) {
         cpu_socket += buffer[i];
     }
 
+    if (cpu_socket == "U3E1") {
+        cpu_socket = "LGA1700";
+    }
+
+
     str = cpu_socket;
 
     return true;
@@ -142,8 +152,13 @@ bool AddDDR(string &str) {
         full_info_ddr += "DDR2 ";
     } else if (buffer == "SMBIOSMemoryType=24" or buffer == "SMBIOSMemoryType=25" or buffer == "SMBIOSMemoryType=18") {
         full_info_ddr += "DDR3 ";
-    } else if (buffer == "SMBIOSMemoryType=26" or buffer == "SMBIOSMemoryType=0") {
+    } else if (buffer == "SMBIOSMemoryType=26") {
         full_info_ddr += "DDR4 ";
+    } else if (buffer == "SMBIOSMemoryType=34" or buffer == "SMBIOSMemoryType=28") {
+        full_info_ddr += "DDR5 ";
+    } else if (buffer == "SMBIOSMemoryType=0") {
+        cout << endl << "MEMORY TYPE - Unknown" << endl;
+        system("pause");
     } else {
         cout << endl << "MEMORY TYPE ERROR" << endl;
         system("pause");
@@ -180,7 +195,7 @@ bool AddDDRCapacity(string &str) {
 
     outFile2.close();
 
-    int capacity_int = static_cast<int>(capacity) / 1024 / 1024 / 1024;
+    int capacity_int = static_cast<int>(capacity / 1024 / 1024 / 1024);
     full_info_ddr += to_string(capacity_int) + "Gb";
 
     str = full_info_ddr;
@@ -297,10 +312,16 @@ bool AddDrives(string &str) {
 
     outFile2.close();
 
-    for (auto & i : drives_size) {
-        double disk_size_gb = stod(i) / 1000 / 1000 / 1000;
-        int disk_size_int = static_cast<int>(disk_size_gb);
-        i = to_string(disk_size_int);
+    for (int i = 0; i < drives_size.size();) {
+        if (drives_name[i].find("USB") != string::npos or drives_name[i].find("usb") != string::npos){
+            drives_name.erase(drives_name.begin() + i);
+            drives_size.erase(drives_size.begin() + i);
+        } else if (!drives_size.empty()){
+            double disk_size_gb = stod(drives_size[i]) / 1000 / 1000 / 1000;
+            int disk_size_int = static_cast<int>(disk_size_gb);
+            drives_size[i] = to_string(disk_size_int);
+            i++;
+        }
     }
 
     for (int i = 0; i < drives_name.size(); ++i) {
@@ -425,10 +446,37 @@ string AddDevicesInfo() {
     return str;
 }
 
+void Check(string &str, string &whois) {
+    string chek;
+
+    do {
+        if (whois == "dalet"){
+            cout << endl << endl << "Is this Dalet's PC? (Y/n): ";
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        } else if (whois == "monoblock"){
+            cout << endl << endl << "Is this Monoblock? (Y/n): ";
+        }
+
+        getline(cin, chek);
+        if (chek.empty() or chek == "y" or chek == "Y" or chek == "д" or chek == "Д"){
+            if (whois == "dalet") {
+                str += "Dalet; ";
+            }else if (whois == "monoblock"){
+                str += "Monoblock; ";
+            }
+            break;
+        }else if (chek == "n" or chek == "N" or chek == "н" or chek == "Н"){
+            break;
+        }
+    } while (!chek.empty() and chek != "y" and chek != "Y" and chek != "n" and chek != "N"
+             and chek != "д" and chek != "Д" and chek != "н" and chek != "Н");
+
+}
 
 void AddFullInfo(string &info_to_file) {
-    string buffer;
 
+    string buffer;
     AddInv(buffer);
     cout << endl << "PC's inventory number info is OK" << endl;
     info_to_file += "Inv: ";
@@ -449,6 +497,7 @@ void AddFullInfo(string &info_to_file) {
 
     cout << endl << "\t-----Other-----" << endl;
 
+
     int office_number;
     cout << endl << "Enter office number: ";
     while (!(cin >> office_number)) {
@@ -461,32 +510,23 @@ void AddFullInfo(string &info_to_file) {
     cout << endl << "Office number is " << office_number;
     info_to_file += "Office - " + to_string(office_number) + "; ";
 
+    buffer = "";
 
-    char dalet_chek;
-    do {
-        cout << endl << endl << "Is this Dalet's PC? y/n: ";
-        cin >> dalet_chek;
+    string whois = "dalet";
 
-        if (dalet_chek == 'y' or dalet_chek == 'Y') {
-            info_to_file += "Dalet; ";
-        }else if (dalet_chek == 'n' or dalet_chek == 'N'){
-            break;
-        }
-    } while (dalet_chek != 'y' and dalet_chek != 'Y' and dalet_chek != 'n' and dalet_chek != 'N');
+    Check(buffer, whois);
+    info_to_file += buffer;
 
+    buffer = "";
+    whois = "monoblock";
 
-    char monoblock_chek;
-    do {
-        cout << endl << endl << "Is this Monoblock? y/n: ";
-        cin >> monoblock_chek;
+    Check(buffer, whois);
+    info_to_file += buffer;
 
-        if (monoblock_chek == 'y' or monoblock_chek == 'Y') {
-            info_to_file += "Monoblock; ";
-        } else if (monoblock_chek == 'n' or monoblock_chek == 'N'){
-            break;
-        }
-    } while (monoblock_chek != 'y' and monoblock_chek != 'Y' and monoblock_chek != 'n' and monoblock_chek != 'N');
+    buffer = "";
+
 }
+
 
 void UpdateInvPC(string &str) {
     vector<string> message;
@@ -539,6 +579,7 @@ void UpdateDevicesInfo(string &str) {
 int main() {
     setlocale(LC_ALL, "Russian.u8");
     system("chcp 65001");
+    system("title Inventory");
     string buffer, info_to_file;
     char command;
 
