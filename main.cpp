@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool WriteToFile(const string& str) {
+bool WriteToFile(const string &str) {
     ofstream inFile("C:\\pc_info\\info_test.txt");
     if (!inFile.is_open()) {
         cerr << "ОШИБКА ЗАПИСИ ФАЙЛА!";
@@ -128,6 +128,7 @@ bool AddCPUSocket(string &str) {
         cpu_socket = "LGA1700";
     }
 
+
     str = cpu_socket;
 
     return true;
@@ -147,7 +148,7 @@ bool AddDDR(string &str) {
     outFile >> buffer;
     outFile.close();
 
-    if (buffer == "SMBIOSMemoryType=21" or buffer == "SMBIOSMemoryType=22" ) {
+    if (buffer == "SMBIOSMemoryType=21" or buffer == "SMBIOSMemoryType=22") {
         full_info_ddr += "DDR2 ";
     } else if (buffer == "SMBIOSMemoryType=24" or buffer == "SMBIOSMemoryType=25" or buffer == "SMBIOSMemoryType=18") {
         full_info_ddr += "DDR3 ";
@@ -162,7 +163,7 @@ bool AddDDR(string &str) {
         cout << endl << "ОШИБКА ТИПА ПАМЯТИ" << endl;
         system("pause");
         return false;
-    };
+    }
 
     str = full_info_ddr;
 
@@ -200,7 +201,6 @@ bool AddDDRCapacity(string &str) {
     str = full_info_ddr;
 
     return true;
-
 }
 
 bool AddGPU(string &str) {
@@ -247,7 +247,7 @@ bool AddMotherboard(string &str) {
     system(R"(wmic baseboard get Product /format:list | FindStr "Product" > "c:\pc_info\1.txt")");
     ifstream outFile2("C:\\pc_info\\1.txt");
     if (!outFile2.is_open()) {
-        cerr << "ВРЕМЕННЫЙ ФАЙЛ НЕ ОТКРЫЛСЯ";
+        cerr << "BUFFER FILE IS NOT OPEN";
         return false;
     }
     getline(outFile2, buffer);
@@ -312,10 +312,10 @@ bool AddDrives(string &str) {
     outFile2.close();
 
     for (int i = 0; i < drives_size.size();) {
-        if (drives_name[i].find("USB") != string::npos or drives_name[i].find("usb") != string::npos){
+        if (drives_name[i].find("USB") != string::npos or drives_name[i].find("usb") != string::npos) {
             drives_name.erase(drives_name.begin() + i);
             drives_size.erase(drives_size.begin() + i);
-        } else if (!drives_size.empty()){
+        } else if (!drives_size.empty()) {
             double disk_size_gb = stod(drives_size[i]) / 1000 / 1000 / 1000;
             int disk_size_int = static_cast<int>(disk_size_gb);
             drives_size[i] = to_string(disk_size_int);
@@ -449,23 +449,23 @@ void Check(string &str, string &whois) {
     string chek;
 
     do {
-        if (whois == "dalet"){
+        if (whois == "dalet") {
             cout << endl << endl << "Этот ПК - Dalet? (Y/n, Д/н): ";
             cin.clear();
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        } else if (whois == "monoblock"){
+        } else if (whois == "monoblock") {
             cout << endl << endl << "Этот ПК - моноблок? (Y/n, Д/н): ";
         }
 
         getline(cin, chek);
-        if (chek.empty() or chek == "y" or chek == "Y" or chek == "д" or chek == "Д"){
+        if (chek.empty() or chek == "y" or chek == "Y" or chek == "д" or chek == "Д") {
             if (whois == "dalet") {
                 str += "Dalet; ";
-            }else if (whois == "monoblock"){
+            } else if (whois == "monoblock") {
                 str += "Monoblock; ";
             }
             break;
-        }else if (chek == "n" or chek == "N" or chek == "н" or chek == "Н"){
+        } else if (chek == "n" or chek == "N" or chek == "н" or chek == "Н") {
             break;
         }
     } while (!chek.empty() and chek != "y" and chek != "Y" and chek != "n" and chek != "N"
@@ -536,7 +536,7 @@ void UpdateInvPC(string &str) {
 
     message[0] = "Inv: " + buffer + "; ";
 
-    for (auto & i : message) {
+    for (auto &i: message) {
         full_info += i + "\n";
     }
 
@@ -552,7 +552,7 @@ void UpdateInvMonitors(string &str) {
 
     message[1] = "Inv monitors: " + buffer;
 
-    for (auto & i : message) {
+    for (auto &i: message) {
         full_info += i + "\n";
     }
 
@@ -568,7 +568,7 @@ void UpdateDevicesInfo(string &str) {
 
     message[2] = buffer;
 
-    for (auto & i : message) {
+    for (auto &i: message) {
         full_info += i + "\n";
     }
 
@@ -577,7 +577,7 @@ void UpdateDevicesInfo(string &str) {
 
 int main() {
     setlocale(LC_ALL, "Russian.u8");
-    system("chcp 65001");
+    system("chcp 65001 >nul");
     system("title Inventory");
     string buffer, info_to_file;
     char command;
