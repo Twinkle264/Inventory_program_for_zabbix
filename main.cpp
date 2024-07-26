@@ -11,13 +11,11 @@ bool WriteToFile(const string& str) {
     ofstream inFile("C:\\pc_info\\info_test.txt");
     if (!inFile.is_open()) {
         cerr << "FILE WRITE ERROR!";
-        return false;
-    }
+        return false;    }
 
     inFile << str;
     inFile.close();
-    return true;
-}
+    return true;}
 
 bool AddInv(string &str) {
     string buffer;
@@ -34,8 +32,7 @@ bool AddInv(string &str) {
     } while (!answer.empty() and answer != "y" and answer != "Y" and answer != "д" and answer != "Д");
 
     str = buffer;
-    return true;
-}
+    return true;}
 
 bool AddInvMonitors(string &str) {
     string buffer;
@@ -94,8 +91,7 @@ bool AddCPUName(string &str) {
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
     getline(outFile, buffer);
     outFile.close();
 
@@ -105,8 +101,7 @@ bool AddCPUName(string &str) {
 
     str = cpu_name;
 
-    return true;
-}
+    return true;}
 
 bool AddCPUSocket(string &str) {
     string buffer, cpu_socket;
@@ -115,8 +110,7 @@ bool AddCPUSocket(string &str) {
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
     getline(outFile, buffer);
     outFile.close();
 
@@ -131,8 +125,7 @@ bool AddCPUSocket(string &str) {
 
     str = cpu_socket;
 
-    return true;
-}
+    return true;}
 
 bool AddDDR(string &str) {
     string buffer, ddr_type, full_info_ddr;
@@ -143,8 +136,7 @@ bool AddDDR(string &str) {
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
     outFile >> buffer;
     outFile.close();
 
@@ -162,13 +154,11 @@ bool AddDDR(string &str) {
     } else {
         cout << endl << "MEMORY TYPE ERROR" << endl;
         system("pause");
-        return false;
-    };
+        return false;    };
 
     str = full_info_ddr;
 
-    return true;
-}
+    return true;}
 
 bool AddDDRCapacity(string &str) {
     string buffer, full_info_ddr;
@@ -178,8 +168,7 @@ bool AddDDRCapacity(string &str) {
     ifstream outFile2("C:\\pc_info\\1.txt");
     if (!outFile2.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
 
     while (outFile2 >> buffer) {
 
@@ -201,7 +190,6 @@ bool AddDDRCapacity(string &str) {
     str = full_info_ddr;
 
     return true;
-
 }
 
 bool AddGPU(string &str) {
@@ -213,8 +201,7 @@ bool AddGPU(string &str) {
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
     getline(outFile, buffer);
     outFile.close();
 
@@ -224,8 +211,7 @@ bool AddGPU(string &str) {
 
     str = gpu_name;
 
-    return true;
-}
+    return true;}
 
 bool AddMotherboard(string &str) {
     string buffer, mother_manufacturer, mother_model, full_info_mother;
@@ -236,8 +222,7 @@ bool AddMotherboard(string &str) {
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
     getline(outFile, buffer);
     outFile.close();
 
@@ -249,8 +234,7 @@ bool AddMotherboard(string &str) {
     ifstream outFile2("C:\\pc_info\\1.txt");
     if (!outFile2.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
     getline(outFile2, buffer);
     outFile2.close();
 
@@ -262,8 +246,7 @@ bool AddMotherboard(string &str) {
 
     str = full_info_mother;
 
-    return true;
-}
+    return true;}
 
 
 bool AddDrives(string &str) {
@@ -276,8 +259,7 @@ bool AddDrives(string &str) {
     ifstream outFile("C:\\pc_info\\1.txt");
     if (!outFile.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
 
     while (getline(outFile, buffer)) {
 
@@ -297,8 +279,7 @@ bool AddDrives(string &str) {
     ifstream outFile2("C:\\pc_info\\1.txt");
     if (!outFile2.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
 
     while (getline(outFile2, buffer)) {
 
@@ -330,8 +311,7 @@ bool AddDrives(string &str) {
 
     str = full_info_drives;
 
-    return true;
-}
+    return true;}
 
 bool ReadFromFile(vector<string> &texts) {
     string buffer;
@@ -339,8 +319,7 @@ bool ReadFromFile(vector<string> &texts) {
     ifstream outFile("C:\\pc_info\\info.txt");
     if (!outFile.is_open()) {
         cerr << "BUFFER FILE IS NOT OPEN";
-        return false;
-    }
+        return false;    }
 
     int iterator = 0;
     while (getline(outFile, buffer)) {
@@ -352,8 +331,7 @@ bool ReadFromFile(vector<string> &texts) {
 
     outFile.close();
 
-    return true;
-}
+    return true;}
 
 string AddDevicesInfo() {
     string buffer, str;
@@ -578,7 +556,7 @@ void UpdateDevicesInfo(string &str) {
 
 int main() {
     setlocale(LC_ALL, "Russian.u8");
-    system("chcp 65001");
+    system("chcp 65001 >nul");
     system("title Inventory");
     string buffer, info_to_file;
     char command;
@@ -604,20 +582,15 @@ int main() {
 
         if (command == '1') {
             AddFullInfo(info_to_file);
-            break;
-        } else if (command == '2') {
+            break;        } else if (command == '2') {
             UpdateInvPC(info_to_file);
-            break;
-        } else if (command == '3') {
+            break;        } else if (command == '3') {
             UpdateInvMonitors(info_to_file);
-            break;
-        } else if (command == '4') {
+            break;        } else if (command == '4') {
             UpdateDevicesInfo(info_to_file);
-            break;
-        } else if (command == '5') {
+            break;        } else if (command == '5') {
             system("C:\\pc_info\\info.txt");
-            continue;
-        } else if (command == '0') {
+            continue;        } else if (command == '0') {
             cout << endl << "\tProgram completed" << endl;
             system("pause");
             return 0;
